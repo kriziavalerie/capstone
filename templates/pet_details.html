@@ -1,0 +1,29 @@
+{% extends "client_layout.html" %} {% block title %}Pets - Tails Of Freedom{% endblock %} {% block content %}
+<div style="width:80%;margin:auto;display: flex;">
+    <div style="width:30%;display: flex;justify-content: center;flex-direction: column;">
+        <img src="/static/{{ animal.image_path }}" alt="" style="border-radius: 100%;margin: auto;width: 225px;height: 225px;">
+        <h1 style="text-align: center;">
+            Hi! I'm {{animal_detail.name}}. <br>I love to chase ball. <br>Can you be my pawmily?
+        </h1>
+        <form method="get" action="{{ url_for('client.add_to_pawmily', animal_id=animal.id) }}">
+            <button type="submit" style="font-size: 20px; font-weight: bolder; display: flex; justify-content: space-around; align-items: center; cursor: pointer;">
+                Add to Pawmily
+                <i class="fas fa-paw" style="color: #51504a; font-size: 30px;"></i>
+            </button>
+        </form>
+
+    </div>
+    <div style="background-color: #f6f7f6;width: 68%;min-height: 600px;margin: auto;">
+        <h1 style="margin-left:30px">A chapter of my journey...</h1>
+        <div style="background-color:white;min-height: 400px;width: 90%;margin: auto;padding: 10px;">
+            {{animal_story.story}}</div>
+        <div>
+            <h1 style="text-align: right;padding:20px;color:#cfc099">
+                <a href="{{ url_for('client.personal_details', animal_id=animal.id) }}" style="color:#cfc099">See Personal Details >></a>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{% block title %}My Website{% endblock %}</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.css" rel="stylesheet" />
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header>
+        <div style="display: flex; justify-content: center;align-items: center;position: relative;">
+            <h1 style="
+               font-family: 'Mistral';
+              font-weight: lighter;
+              font-size: 60px;
+              color: #51504a;
+              margin-bottom: 10px;
+            display: flex;align-items: center;gap: 30px;">
+                <img src="/static/logo.jpg" width="100px" alt=""> Tails of Freedom
+            </h1>
+
+            <a style="color: none;text-transform: uppercase;cursor: pointer;position: absolute;right: 10%;" href="{{ url_for( 'auth.logout') }} ">
+                <i class="fas fa-sign-out" style="color: #ea7d63;font-size: 50px;"></i>
+            </a>
+
+        </div>
+
+        <br />
+        <br />
+        <nav style="width: 80%; margin: auto">
+            <ul style="
+                display: flex;
+                justify-content: space-evenly;
+                list-style-type: none;
+            ">
+                <a href="/animals" style="
+                    text-decoration: none;
+                    color: inherit;
+                    display: flex;
+                    gap: 40px;
+                ">
+                    <li style="font-size: 20px" {% if request.path=='/animals' %}class="active" {% endif %}>Animals</li>
+                    <i class="fas fa-paw" style="color: #51504a; font-size: 30px"></i>
+                </a>
+
+                <a href="/client_information" style="
+                    text-decoration: none;
+                    color: inherit;
+                    display: flex;
+                    gap: 100px;
+                ">
+                    <li style="font-size: 20px" {% if request.path=='/client_information' %}class="active" {% endif %}>Client Information</li>
+                    <i class="fas fa-paw" style="color: #51504a; font-size: 30px"></i>
+                </a>
+
+                <a href="/volunteers" style="
+                    text-decoration: none;
+                    color: inherit;
+                    display: flex;
+                    gap: 100px;
+                ">
+                    <li style="font-size: 20px" {% if request.path=='/volunteers' %}class="active" {% endif %}>Volunteers</li>
+                    <i class="fas fa-paw" style="color: #51504a; font-size: 30px"></i>
+                </a>
+
+                <a href="/schedules" style="
+                    text-decoration: none;
+                    color: inherit;
+                    display: flex;
+                    gap: 100px;
+                ">
+                    <li style="font-size: 20px" {% if request.path=='/schedules' %}class="active" {% endif %}>Schedules</li>
+                </a>
+            </ul>
+        </nav>
+
+
+        <br />
+        <div style="
+            white-space: nowrap;
+            overflow: hidden;
+            width: 80%;
+            margin: auto;
+            font-size: 20px;
+            font-weight: bolder;
+            color: #51504a;
+          ">
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        </div>
+    </header>
+    <!-- Display Flash Messages as Alerts with Animation and Auto-Dismissal -->
+    <div class="alert-container">
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,message in messages %}
+        <div class="alert alert-{{ category }} alert-show">
+            {{ message }}
+        </div>
+        {% endfor %} {% endif %} {% endwith %}
+    </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+
+
+
+    </div>
+
+</body>
+
+</html>
+<!-- Add JavaScript to Auto-Dismiss Flash Messages with Right-to-Left Transition -->
+<script>
+    const alertElements = document.querySelectorAll('.alert-show');
+    alertElements.forEach((element, index) => {
+        // Slide in from the right
+        element.style.transform = 'translateX(100%)';
+        element.style.transition = 'transform 0.5s ease-in-out';
+
+        setTimeout(() => {
+            // Slide in from the right to the center
+            element.style.transform = 'translateX(0)';
+        }, 50 * (index + 1)); // Adjust the delay as needed (50ms in this example)
+
+        setTimeout(() => {
+            // Slide out to the left
+            element.style.transform = 'translateX(100%)';
+        }, 3000 * (index + 2)); // Adjust the delay as needed (3 seconds in this example)
+
+        setTimeout(() => {
+            // Hide the element
+            element.style.display = 'none';
+        }, 3500 * (index + 2)); // Adjust the delay as needed
+    });
+</script>

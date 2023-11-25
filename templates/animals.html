@@ -1,0 +1,79 @@
+{% extends "layout.html" %} {% block title %}Animals - Tails Of Freedom{% endblock %} {% block content %}
+
+<style>
+    .full-width-element {
+        width: 100%;
+        background: repeating-linear-gradient( to right, transparent, transparent 20px, #000 20px, #000 40px);
+        /* Repeating slash pattern */
+        height: 40px;
+        /* Set the height as needed */
+    }
+    
+    a {
+        display: inline;
+    }
+</style>
+<div class="tabs">
+    <a href="#" class="tab" data-type="All">All</a>
+    <a href="#" class="tab" data-type="Cat">Cats</a>
+    <a href="#" class="tab" data-type="Dog">Dogs</a>
+</div>
+<div style="display: flex; margin: auto; margin-top: 40px; gap: 30px; flex-wrap: wrap;">
+    {% for animal in animals %}
+    <div class="animal-card" data-animal-type="{{animal.details.animal_type|capitalize}}">
+        <div style="background-color: #fe7d7c; border-radius: 50px; display: flex; flex-direction: column; ">
+            <a href="{{ url_for( 'animal_details.edit_animal_details', animal_id=animal.id) }} ">
+                <img class="animal-image " src="static/{{ animal.image_path }} " style="width: 245px; height: 245px; " />
+            </a>
+        </div>
+        {% for animal_detail in animal_details %} {% if animal_detail.animal_id == animal.id %}
+        <h1 style="text-align: center; ">{{ animal_detail.name }} | {{ animal_detail.animal_type }}</h1>
+        {% endif %} {% endfor %}
+    </div>
+    {% endfor %}
+    <div style="margin-left: auto; display: flex;padding-right: 80px;align-items: center; ">
+        <div class="icon-container ">
+            <a href="{{ url_for( 'animal.add_animal') }} ">
+                <i class="fas fa-plus "></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+
+</html>
+
+<script>
+    const tabs = document.querySelectorAll(".tab");
+
+    tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+            tabs.forEach((t) => t.classList.remove("active"));
+
+            // Add the "active" class to the clicked tab
+            tab.classList.add("active");
+        });
+    });
+
+    // JavaScript to filter animals based on the selected tab
+    document.querySelectorAll(".tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+            const selectedType = tab.getAttribute("data-type");
+            const animalCards = document.querySelectorAll(".animal-card");
+
+            animalCards.forEach(card => {
+                const cardType = card.getAttribute("data-animal-type");
+                if (selectedType === "All" || selectedType === cardType) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

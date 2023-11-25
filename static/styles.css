@@ -1,0 +1,469 @@
+    /* Import the Poppins font from Google Fonts */
+    
+    @font-face {
+        font-family: "Mistral";
+        src: url("/fonts/MISTRAL.TTF");
+    }
+    
+    @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600');
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        min-height: 106vh;
+        position: relative;
+    }
+    
+    main {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        height: 100vh;
+    }
+    
+    .content {
+        width: 80%;
+        margin: auto;
+    }
+    
+    .LoginForm {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 25vw;
+        min-height: 35vw;
+        align-items: center;
+        justify-content: center;
+        margin: 35px;
+        padding: 10px;
+    }
+    
+    .LoginForm::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('/static/Paw2_BG.PNG') no-repeat center center/90%;
+        opacity: 0.1;
+        /* Adjust the opacity for the image as needed */
+        z-index: -1;
+        /* Place the pseudo-element below content */
+    }
+    
+    .LoginForm::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #fe7d7c;
+        /* Background color without opacity */
+        z-index: -2;
+        /* Place this pseudo-element below the image */
+    }
+    
+    .LoginForm.LoginForm.RegisterForm {
+        position: relative;
+    }
+    
+    .LoginForm.RegisterForm h1 {
+        top: 0;
+        left: 10%;
+        position: absolute;
+    }
+    
+    .LoginForm.RegisterForm::before {
+        opacity: 0.5;
+    }
+    
+    .LoginForm.RegisterForm::after {
+        background-color: white;
+    }
+    
+    .LoginForm.RegisterForm input {
+        background-color: #f4f4f4;
+        border-radius: 15px;
+    }
+    
+    input {
+        background-color: #ffd4d4;
+        margin: 25px;
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        padding-top: 25px;
+        padding-bottom: 25px;
+        width: 87%;
+        margin: 10px;
+    }
+    
+    button {
+        background-color: transparent;
+        display: block;
+        width: 90%;
+        border: solid 1px black;
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    .title {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 50%;
+        align-items: center;
+    }
+    
+    .active {
+        color: #fe7d7c;
+    }
+    
+    li {
+        font-family: 'Poppins', sans-serif;
+        font-size: 20px;
+        white-space: nowrap;
+    }
+    /* Style for the tab container */
+    
+    .tabs {
+        width: 80%;
+        display: flex;
+        justify-content: space-around;
+        margin: auto;
+        margin-top: 40px;
+        align-items: center;
+    }
+    /* Style for individual tabs */
+    
+    .tab {
+        position: relative;
+        padding: 10px 150px;
+        text-decoration: none;
+        color: black;
+        font-size: 25px;
+        cursor: pointer;
+    }
+    
+    .tab:hover::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        /* Adjust the height of the underline as needed */
+        background-color: #333;
+    }
+    /* Add active tab style */
+    
+    .tab.active::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        /* Adjust the height of the underline as needed */
+        background-color: #333;
+    }
+    
+    .animal-image {
+        padding: 10px;
+        border-radius: 50px;
+    }
+    /* Style for the icon container */
+    
+    .icon-container {
+        width: 50px;
+        /* Adjust the width as needed */
+        height: 50px;
+        /* Adjust the height as needed */
+        background-color: #fe7d7c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 100%;
+    }
+    /* Style for the FontAwesome icon */
+    
+    i.fas.fa-plus {
+        color: white;
+        font-size: 24px;
+        /* Adjust the font size as needed */
+    }
+    /* Style for the search container */
+    
+    .search-container {
+        display: flex;
+        align-items: center;
+        width: 300px;
+        /* Adjust the width as needed */
+        border: 1px solid #ccc;
+        border-radius: 25px;
+    }
+    /* Style for the FontAwesome search icon */
+    
+    i.fas.fa-search {
+        color: #999;
+        padding: 5px;
+    }
+    /* Style for the search input */
+    
+    input.search-input {
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 16px;
+    }
+    /* Style for the sort container */
+    
+    .sort-container {
+        display: flex;
+        align-items: center;
+        width: 200px;
+        /* Adjust the width as needed */
+        padding: 5px;
+        border-radius: 25px;
+        height: 50px;
+        flex-direction: column;
+    }
+    /* Style for the label */
+    
+    label {
+        margin-right: 10px;
+    }
+    /* Style for the custom select container */
+    
+    .custom-select {
+        position: relative;
+        width: 100%;
+    }
+    /* Style for the select element */
+    
+    .custom-select select {
+        width: 100%;
+        background: transparent;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+        padding: 5px;
+    }
+    /* Style for the FontAwesome chevron down icon */
+    
+    i.fas.fa-chevron-down {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        color: #999;
+    }
+    
+    table {
+        border-collapse: collapse;
+        width: 80%;
+        margin: auto;
+    }
+    
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    th {
+        font-weight: bolder;
+        font-size: 20px;
+    }
+    
+    tr {
+        padding: 25px;
+    }
+    /* Style for the date input container */
+    
+    .date-input-container {
+        display: flex;
+        align-items: center;
+        width: 200px;
+        /* Adjust the width as needed */
+        border: 1px solid #ccc;
+        padding: 5px;
+        border-radius: 5px;
+    }
+    /* Style for the calendar icon */
+    
+    i.fas.fa-calendar-alt {
+        color: #999;
+        padding: 5px;
+    }
+    /* Style for the date input */
+    
+    input.date-input {
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 16px;
+        background-color: transparent;
+        padding: 0;
+        /* Remove padding to align with icon */
+    }
+    /* Style for the date input container */
+    
+    .container {
+        padding: 0px;
+    }
+    
+    .date-input-container {
+        display: flex;
+        align-items: center;
+        width: 200px;
+        /* Adjust the width as needed */
+        border: 1px solid #ccc;
+        padding: 5px;
+        border-radius: 25px;
+    }
+    /* Style for the calendar icon */
+    
+    i.fas.fa-calendar-alt {
+        color: #999;
+        padding: 5px;
+    }
+    /* Style for the date input */
+    
+    input.date-input {
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 16px;
+        background-color: transparent;
+        padding: 0;
+        /* Remove padding to align with icon */
+    }
+    
+    .container {
+        background-color: #ea8b74;
+        border-radius: 20px;
+        text-align: center;
+    }
+    
+    .add-button {
+        color: #fff;
+        padding: 15px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    
+    .alert-container {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    
+    .alert {
+        padding: 10px;
+        border: 1px solid #ccc;
+        color: #333;
+        margin: 10px 0;
+        opacity: 0;
+        transform: translateX(100%);
+        /* Start from the right */
+        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    }
+    
+    .alert-show {
+        opacity: 1;
+        transform: translateX(0);
+        /* Slide in from the right */
+    }
+    
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+    
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+    
+    a {
+        text-decoration: none;
+    }
+    
+    #cart-count {
+        position: absolute;
+        top: 25px;
+        right: 10px;
+        background-color: #FF0000;
+        color: #FFFFFF;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        font-size: 14px;
+        line-height: 20px;
+        /* Initially hidden */
+    }
+    
+    #cart-list {
+        border: 1px solid #000;
+        padding: 10px;
+        transition: max-height 0.3s ease-in-out;
+        min-width: 500px;
+        min-height: 500px;
+        position: absolute;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #cart-list ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: stretch;
+        margin-top: 40px;
+    }
+    
+    #cart-list ul li {
+        margin: 5px 0;
+        display: flex;
+        gap: 25px;
+        justify-content: space-between;
+        align-items: center;
+        /* Add more styling for list items as needed */
+    }
+    
+    .notification-container {
+        background-color: #e5f9eb;
+        border: 1px solid #a3cea5;
+        color: #107142;
+        padding: 10px;
+        margin: 10px;
+        border-radius: 5px;
+    }
+    
+    .notification-container ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .notification-container li {
+        margin-bottom: 5px;
+    }

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Animal Report</title>
+    <style>
+        /* Reset some default styles for better typography */
+        
+        body,
+        h1,
+        h2 {
+            font-family: "Arial, sans-serif";
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1,
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-top: 20px;
+        }
+        /* Style the tables */
+        
+        table {
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+        /* Style the images */
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Animal Report for {{ animal_details.name }}</h1>
+
+    <img src="{% if animal.image_path %}C:/Users/Rob wilson/Documents/Commission/Tails of Freedom/static/{{ animal.image_path }}{% else %}/static/imageplaceholder.jfif{% endif %}" alt="Animal Image" /> {% if animal_details %}
+    <h2>Animal Details</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <td>{{ animal_details.name }}</td>
+            <th>Tag Number</th>
+            <td>{{ animal_details.tag_number }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>{{ animal_details.status }}</td>
+            <th>Estimated Age</th>
+            <td>{{ animal_details.estimated_age }}</td>
+        </tr>
+        <tr>
+            <th>Animal Status</th>
+            <td>{{ animal_details.animal_status }}</td>
+            <th>Current Weight</th>
+            <td>{{ animal_details.current_weight }}</td>
+        </tr>
+        <tr>
+            <th>Date of Birth</th>
+            <td>{{ animal_details.date_of_birth }}</td>
+            <th>Date of Arrival</th>
+            <td>{{ animal_details.date_of_arrival }}</td>
+        </tr>
+        <tr>
+            <th>Animal Type</th>
+            <td>{{ animal_details.animal_type }}</td>
+            <th>Coat Type</th>
+            <td>{{ animal_details.coat_type }}</td>
+        </tr>
+        <tr>
+            <th>Primary Color</th>
+            <td>{{ animal_details.primary_color }}</td>
+            <th>Secondary Color</th>
+            <td>{{ animal_details.secondary_color }}</td>
+        </tr>
+        <tr>
+            <th>Breed</th>
+            <td>{{ animal_details.breed }}</td>
+            <th>Gender</th>
+            <td>{{ animal_details.gender }}</td>
+        </tr>
+    </table>
+    {% endif %} {% if animal_health %}
+    <h2>Animal Health</h2>
+    <table>
+        <tr>
+            <th>Health Type</th>
+            <td>{{ animal_health.health_type }}</td>
+            <th>Dose</th>
+            <td>{{ animal_health.dose }}</td>
+        </tr>
+        <tr>
+            <th>Frequency</th>
+            <td>{{ animal_health.frequency }}</td>
+            <th>Rabies Vaccination</th>
+            <td>{{ animal_health.rabies_vaccination }}</td>
+        </tr>
+        <tr>
+            <th>Deworming</th>
+            <td>{{ animal_health.deworming }}</td>
+            <th>Health Frequency</th>
+            <td>{{ animal_health.health_frequency }}</td>
+        </tr>
+    </table>
+    {% endif %} {% if animal_owners %}
+    <h2>Animal Owner</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <td>{{ animal_owners.name }}</td>
+            <th>Address</th>
+            <td>{{ animal_owners.address }}</td>
+        </tr>
+        <tr>
+            <th>Contact Number</th>
+            <td>{{ animal_owners.contact_number }}</td>
+            <th>Email Address</th>
+            <td>{{ animal_owners.email_address }}</td>
+        </tr>
+        <tr>
+            <th>Age</th>
+            <td>{{ animal_owners.age }}</td>
+            <th>Date Applied</th>
+            <td>{{ animal_owners.date_applied }}</td>
+        </tr>
+        <tr>
+            <th>Date Adopted</th>
+            <td>{{ animal_owners.date_adopted }}</td>
+        </tr>
+    </table>
+    {% endif %}{% if animal_stories %}
+    <h2>Animal Story</h2>
+    <table>
+        <tr>
+            <td>{{ animal_stories.story }}</td>
+        </tr>
+    </table>
+    {% endif %}
+
+
+</body>
+
+</html>

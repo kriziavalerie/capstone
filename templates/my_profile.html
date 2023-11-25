@@ -1,0 +1,311 @@
+{% extends "client_layout.html" %} {% block title %}My Profile - Tails Of Freedom{% endblock %} {% block content %}
+<style>
+    textarea {
+        min-width: 80%;
+        min-height: 200px;
+        margin: auto
+    }
+    
+    label {
+        margin: auto;
+        min-width: 80%;
+    }
+    
+    .full-width-element {
+        width: 100%;
+        background: repeating-linear-gradient(to right, transparent, transparent 20px, #000 20px, #000 40px);
+        /* Repeating slash pattern */
+        height: 40px;
+        /* Set the height as needed */
+    }
+    
+    a {
+        display: inline;
+    }
+    /* Reduce the size of the calendar container */
+    
+    .fc-daygrid-day {
+        border: none !important;
+    }
+    
+    .fc-daygrid-day-number {
+        width: auto !important;
+    }
+    
+    .fc-toolbar-title {
+        font-family: "Dancing Script", cursive;
+    }
+    
+    .fc .fc-daygrid-day-top {
+        display: block;
+    }
+    
+    .fc .fc-daygrid-day-top .fc-daygrid-day-number {
+        display: block;
+        width: 100%;
+        margin: auto;
+        text-align: center;
+    }
+    
+    .fc-daygrid-day-events {
+        display: none;
+    }
+    
+    .calendar {
+        width: 400px;
+        height: 450px;
+        background-color: #fcfbf4;
+        margin-right: 50px;
+        overflow-y: hidden;
+    }
+    
+    .fc-dayGrid-event,
+    .fc-timegrid-event {
+        font-size: 12px;
+        /* Adjust the font size as needed */
+    }
+    
+    .fc-col-header-cell.fc-day {
+        font-size: 12px;
+        /* Adjust the font size as needed */
+    }
+    /* Adjust the size of the day cells and their contents */
+    
+    .fc-day,
+    .fc-day-top,
+    .fc-day-header,
+    .fc-day-number {
+        width: 50px;
+        /* Adjust the width as needed */
+        height: 50px;
+        /* Adjust the height as needed */
+        font-size: 15px;
+        /* Adjust the font size as needed */
+    }
+    
+    .fc-col-header-cell.fc-day {
+        font-size: 12px;
+        border: none !important;
+    }
+    
+    .fc .fc-scrollgrid {
+        border: none;
+        overflow: hidden;
+    }
+    
+    input {
+        background-color: white;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.js"></script>
+
+<br>
+<br>
+
+<div style="margin:auto;display: flex;align-items: center;justify-content: space-around;">
+    <div style="display: flex;align-items: flex-start;justify-content: flex-start;flex-direction: column;width: 100%;">
+        <table>
+            {% if client_animals %} {% for client_animal in client_animals %} {% if client_animal.status is not none %}
+
+            <tr>
+                <th>My Pets</th>
+                <th>Status</th>
+                {% if client_animal.status == "accept" %}
+                <th></th>{% endif %}
+            </tr>
+            <tr>
+                <td style="display: flex;align-items: center;gap: 30px;">
+                    <a href="{{ url_for('client.pet_details', animal_id=client_animal.animal.id) }}" style="color: black;">
+                        <div style="display: flex;justify-content: center;">
+                            <img src="/static/{{ client_animal.animal.image_path }}" alt="" style="width: 100px; height: 100px; border-radius: 100%;margin: auto;"><br>
+
+                        </div>
+                        <strong style="padding: 0;margin: 0;text-align: center;display: flex;justify-content: center;flex-direction: column;">{{ client_animal.animal.details.name }} <br> <span style="font-weight: lighter;">{{ client_animal.animal.details.breed }} | {{ client_animal.animal.details.estimated_age }} years old</span></strong></a>
+                </td>
+                <td>{{ client_animal.status }}</td>
+                {% if client_animal.status == "accept" %}
+                <td style="position:relative; " onclick="toggleAppointment(this)">
+                    <i class="fas fa-info-circle"></i> Click here to set Appointment
+                    <div class="appointmentDiv" style="display:none;position:absolute;bottom: -350%;left:-110%;background-color: #fcfcf4;width: 1000px;height: 500px;justify-content: center;padding: 5px;align-items: center;z-index: 100;" onclick="event.stopPropagation();">
+                        <div class="calendar" data-calendar-id=""></div>
+                        <div style="width:35%;background-color: #f8dcd4;height: 450px;">
+                            <form action="{{ url_for('client.client_edit_client_animal', client_id=client_animal.client.id, animal_id=client_animal.animal.id) }}" method="POST">
+                                <div class="form-group">
+                                    <label style="font-weight:bolder;margin-right: auto;margin-left: 25px;font-size:18px;" for="date_applied">Date:</label>
+                                    <input type="date" name="appointment_date" id="appointment_date" value="{{ client_animal.appointment_date if client_animal.appointment_date else null}}" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label style="font-weight:bolder;margin-right: auto;margin-left: 25px;font-size:18px;" for="time_applied">Time:</label>
+                                    <input type="time" name="time_applied" id="time_applied" value="{{ client_animal.time_applied if client_animal.time_applied else null}}" pattern="%I:%M %p" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary" style="background-color:#fae6e1;color:black;cursor:pointer;border: none;text-transform: uppercase;font-weight: bolder;font-size: 20px;border-radius: 25px;width: 300px;margin:auto;padding: 15px;">Confirm</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </td>
+
+                {% endif %}
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2" style="text-align: center; font-size: 24px;">No pets applied</td>
+            </tr>
+            {% endif %} {% endfor %} {% else %}
+
+            <h1 style="text-align: center; font-size: 24px;margin: auto;margin-bottom: auto;">No pets added yet</h1>
+            <br><br> {% endif %}
+        </table>
+
+        <br><br>
+        <table id="volunteersTable">
+            {%if volunteers %} {% for volunteer in volunteers %}
+
+            <thead>
+                <tr>
+                    <th>Volunteer Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-name="{{ volunteer.client.first_name }} {{ volunteer.client.last_name }}" data-status="{{ volunteer.application_status }}" data-date="{{ volunteer.date_applied|default('N/A') }}" data-time="{{ volunteer.time_applied|default('N/A') }}" onclick="editVolunteer('{{ volunteer.id }}')"
+                    style="cursor: pointer;">
+                    <td>{{ volunteer.date_applied|default('N/A') }}</td>
+                    <td class="time">{{ volunteer.time_applied|default('N/A') }}</td>
+                    <td>{{ volunteer.application_status }}</td>
+
+                </tr>
+                <form id="editForm{{ volunteer.id }}" method="get" action="{{ url_for('admin.edit_volunteer', volunteer_id=volunteer.id) }}">
+                    <!-- Hidden form fields, if needed -->
+                </form>
+            </tbody>
+            {% endfor %} {% else %}
+            <h1 style="text-align: center;margin: auto;font-size: 24px;">Did not Volunteered yet</h1>
+            {% endif %} </table>
+
+
+    </div>
+    <div style="width: 30%; min-height: 300px;margin-bottom: auto; display: flex; justify-content: center; align-items: center; flex-direction: column; ">
+        <div style="background-color: #fae8e4;min-width: 100%; min-height: 300px;display: flex; justify-content: center; align-items: center; flex-direction: column;">
+            <img src="{% if 'uploaded_images/' in client.image_path or '/' == client.image_path[:1] %}/static/{{ client.image_path }}{% else %}{{ client.image_path }}{% endif %}" width="96px" height="96px" alt=" " style="border-radius: 100%;">
+
+
+
+            <br> {{ client.username }}
+
+
+
+
+
+        </div>
+        <div style="width:100%">
+            <a href="/settings ">
+                <button type="submit " style="width:100%;margin-left: auto;font-weight: bolder;margin-bottom: auto; ">Settings</button>
+                <a style="color: none;text-transform: uppercase;" href="{{ url_for( 'auth.logout') }} "><button style="width:100%;margin: auto;margin-top: 20px;">
+                <strong>LOGOUT</strong>
+                </button></a>
+
+            </a>
+        </div>
+
+    </div>
+    <br><br>
+</div>
+
+<script>
+    function toggleAppointment(icon) {
+        var clickedTd = icon.closest('td');
+        var appointmentDiv = clickedTd.querySelector('.appointmentDiv');
+
+        // Hide all other appointmentDiv elements
+        var allAppointmentDivs = document.querySelectorAll('.appointmentDiv');
+        allAppointmentDivs.forEach(function(otherAppointmentDiv) {
+            if (otherAppointmentDiv !== appointmentDiv) {
+                otherAppointmentDiv.style.display = "none";
+            }
+        });
+
+        // Toggle the display of the clicked appointmentDiv
+        if (appointmentDiv.style.display === "none" || getComputedStyle(appointmentDiv).display === "none") {
+            appointmentDiv.style.display = "flex";
+        } else {
+            appointmentDiv.style.display = "none";
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendars = document.querySelectorAll('.calendar');
+
+        calendars.forEach(function(calendarEl, index) {
+            var uniqueId = index + 1;
+            calendarEl.dataset.calendarId = uniqueId;
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    start: '',
+                    center: 'title',
+                    end: 'prev,next'
+                },
+                dayCellContent: function(info) {
+                    return info.dayNumberText;
+                },
+                dayHeaderContent: function(info) {
+                    var dayName = info.date.toLocaleDateString('en-US', {
+                        weekday: 'short'
+                    });
+                    return dayName.charAt(0);
+                }
+            });
+
+            calendar.render();
+
+            // Add event listener for all days
+            var allDays = calendarEl.querySelectorAll('.fc-daygrid-day');
+            allDays.forEach(function(dayEl) {
+                dayEl.addEventListener('click', function(info) {
+                    // Remove previous styling
+                    var previousClickedDate = document.querySelector('.clicked-date');
+                    if (previousClickedDate) {
+                        var previousDayNumberEl = previousClickedDate.querySelector('.fc-daygrid-day-number');
+                        previousDayNumberEl.style.backgroundColor = '';
+                        previousDayNumberEl.style.borderRadius = '';
+                        previousClickedDate.classList.remove('clicked-date');
+                    }
+
+                    var selectedDate = dayEl.dataset.date; // Get the date from the data-date attribute
+                    var formattedDate = selectedDate; // No need to split and format
+
+                    // Update the nearest input with the name 'appointment_date' within the same parent container
+                    var appointmentDateElement = dayEl.closest('.calendar').nextElementSibling.querySelector('[name="appointment_date"]');
+                    if (appointmentDateElement) {
+                        appointmentDateElement.value = formattedDate;
+                    }
+
+                    // Highlight the clicked day
+                    dayEl.classList.add('clicked-date');
+
+                    // Retrieve the day number element within the clicked date cell
+                    var dayNumberEl = dayEl.querySelector('.fc-daygrid-day-number');
+                    dayNumberEl.style.backgroundColor = '#ccb4ad';
+
+                    // Apply border radius to the day number element
+                    dayNumberEl.style.borderRadius = '100%';
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

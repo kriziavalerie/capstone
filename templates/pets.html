@@ -1,0 +1,215 @@
+{% extends "client_layout.html" %} {% block title %}Pets - Tails Of Freedom{% endblock %} {% block content %}
+
+<br>
+<div style="width: 80%; margin: auto; text-align: center">
+    <div style="display: flex; justify-content: space-around">
+        <div class="sort-container">
+            <strong style="text-transform:uppercase;font-size:20px"> Animal Type</strong> <br>
+            <div class="custom-select">
+                <select id="sort-by-animal-type" style="text-transform:uppercase;font-size: 20px;text-align: center;background-color: #e6e7e6;border: none;padding: 10px;">
+                    <option value="Any">Any</option>
+                    <option value="Cat">Cat</option>
+                    <option value="Dog">Dog</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="sort-container">
+            <strong style="text-transform:uppercase;font-size:20px"> Age</strong> <br>
+            <div class="custom-select">
+                <select id="sort-by-age" style="text-transform:uppercase;font-size: 20px;text-align: center;background-color: #e6e7e6;border: none;padding: 10px;">
+                    <option value="Any">Any</option>
+                    <option value="1-5">1-5</option>
+                    <option value="5-10">5-10</option>
+                    <option value="10-15">10-15</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="sort-container">
+            <strong style="text-transform:uppercase;font-size:20px"> Size</strong> <br>
+            <div class="custom-select">
+                <select id="sort-by-size" style="text-transform:uppercase;font-size: 20px;text-align: center;background-color: #e6e7e6;border: none;padding: 10px;">
+                    <option value="Any">Any</option>
+                    <option value="0-5">Small</option>
+                    <option value="10-15">Medium</option>
+                    <option value="15-30">Large</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="sort-container">
+            <strong style="text-transform:uppercase;font-size:20px"> Gender</strong> <br>
+            <div class="custom-select">
+                <select id="sort-by-gender" style="text-transform:uppercase;font-size: 20px;text-align: center;background-color: #e6e7e6;border: none;padding: 10px;">
+                    <option value="Any">Any</option>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="sort-container" style="border: none">
+            <div id="cart-button" style="cursor: pointer; position: relative">
+                <img src="/static/add_to_Cart.png" height="125px" />
+                <div id="cart-count" style="display: block"></div>
+                <div id="cart-list" style="display: none">
+                    <form action="{{ url_for('client.apply_pets') }}" method="post">
+                        <ul>
+                            {% for client_animal in client_animals %} {% if client_animal.status is none or client_animal.status == 'null' %}
+                            <li>
+                                <img src="/static/{{ client_animal.animal.image_path }}" alt="" style="width: 100px;height: 100px;" /> {% for animal_detail in animal_details %} {% if animal_detail.id == client_animal.animal.id %}
+                                <h3>{{ animal_detail.name }}</h3>
+                                {% endif %} {% endfor %}
+                                <input type="checkbox" name="pet_ids" value="{{ client_animal.animal.id }}" />
+                                <i class="fas fa-trash-alt" style="color: red; cursor: pointer" onclick="removeAnimal('{{ client_animal.animal.id }}')"></i>
+                            </li>
+                            {% endif %} {% endfor %}
+                        </ul>
+
+                        <button type="submit" class="btn btn-primary" style="cursor: pointer">
+              Apply 
+              <i class="fas fa-paw"></i>
+            </button>
+                    </form>
+
+                    <form id="removeAnimalForm" action="/remove_from_pawmily/" method="GET">
+                        <input type="hidden" name="animal_id" id="animalIdInput" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br /><br />
+    <div id="animal-cards" style="display: flex; gap: 25px;flex-wrap: wrap;margin-top: 20px;">
+        {% for animal in animals %}
+        <div style="
+        width: 200px;
+        min-height: 150px;
+        background-color: #f4d4cc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+      " data-animal-type="{{ animal.details.animal_type|capitalize }}" data-age="{{ animal.details.estimated_age|capitalize }}" data-size="{{ animal.details.current_weight|capitalize }}" data-gender="{{ animal.details.gender|capitalize }}">
+            <a href="{{ url_for('client.pet_details', animal_id=animal.id) }}">
+                <img src="/static/{{ animal.image_path }}" alt="" style="width: 165px; height: 165px; margin: auto; margin: 10px" />
+            </a> {% for animal_detail in animal_details %} {% if animal_detail.animal_id == animal.id %}
+            <span style="margin-bottom: 10px">
+        {{ animal_detail.name }} | {{ animal_detail.breed }} <br />
+        {{ animal_detail.estimated_age }} years | {{
+        animal_detail.current_weight }} kg <br />
+      </span> {% endif %} {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    var cartButton = document.getElementById("cart-button");
+    var cartCount = document.getElementById("cart-count");
+    var cartList = document.getElementById("cart-list");
+    var listItems = document.querySelectorAll("#cart-list ul li");
+
+    var itemCount = listItems.length; // Initialize the item count based on the number of list items
+
+    cartCount.textContent = itemCount;
+
+    cartButton.addEventListener("click", function(event) {
+        event.stopPropagation(); // Prevent the click event from propagating to the document
+
+        // Toggle the list display (show/hide)
+        if (cartList.style.display === "none") {
+            cartList.style.display = "flex";
+        } else {
+            cartList.style.display = "none";
+        }
+    });
+
+    // Add a click event listener to the document to hide the cartList when clicking outside
+    document.addEventListener("click", function(event) {
+        if (event.target !== cartButton && event.target !== cartList) {
+            cartList.style.display = "none";
+        }
+    });
+
+    // Prevent clicks inside the cartList from hiding it
+    cartList.addEventListener("click", function(event) {
+        event.stopPropagation();
+    });
+
+    function removeAnimal(animalId) {
+        // Set the animal_id in the hidden input field
+        document.getElementById("animalIdInput").value = animalId;
+
+        // Append the animal_id to the form's action URL
+        document.getElementById("removeAnimalForm").action =
+            "/remove_from_pawmily/" + animalId;
+
+        // Submit the form to remove the from Pawmily
+        document.getElementById("removeAnimalForm").submit();
+    }
+
+    // JavaScript function to filter animals based on selected options
+    function filterAnimals() {
+        const selectedAnimalType = document.getElementById("sort-by-animal-type").value;
+        const selectedAge = document.getElementById("sort-by-age").value;
+        const selectedSize = document.getElementById("sort-by-size").value;
+        const selectedGender = document.getElementById("sort-by-gender").value;
+
+        const animalCards = document.querySelectorAll("#animal-cards > div");
+
+        // Helper function to check if a value is within a range
+        function isWithinRange(value, range) {
+            const [min, max] = range.split('-').map(Number);
+            return value >= min && value <= max;
+        }
+        // Helper function to check if a value matches the selected size
+        function matchesSize(size, selectedSize) {
+            if (selectedSize === "Any") {
+                return true; // Any size matches
+            }
+            if (selectedSize === "Small" && size <= 5) {
+                return true;
+            }
+            if (selectedSize === "Medium" && size >= 6 && size <= 10) {
+                return true;
+            }
+            if (selectedSize === "Large" && size > 10) {
+                return true;
+            }
+            return false;
+        }
+
+        // Loop through animal cards and hide/show based on filters
+        animalCards.forEach((card) => {
+            const animalType = card.getAttribute("data-animal-type");
+            const age = parseInt(card.getAttribute("data-age"));
+            const size = parseInt(card.getAttribute("data-size"));
+            const gender = card.getAttribute("data-gender");
+
+            // Check if the selected filters match the card's attributes
+            if (
+                (selectedAnimalType === "Any" || selectedAnimalType === animalType) &&
+                (selectedAge === "Any" || isWithinRange(age, selectedAge)) &&
+                (selectedSize === "Any" || isWithinRange(size, selectedSize)) &&
+                (selectedGender === "Any" || selectedGender === gender)
+            ) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+
+    // Attach the filter function to the change event of the select elements
+    document.getElementById("sort-by-animal-type").addEventListener("change", filterAnimals);
+    document.getElementById("sort-by-age").addEventListener("change", filterAnimals);
+    document.getElementById("sort-by-size").addEventListener("change", filterAnimals);
+    document.getElementById("sort-by-gender").addEventListener("change", filterAnimals);
+    document.getElementById("sort-by-weight").addEventListener("change", filterAnimals);
+</script>
+
+{% endblock %}

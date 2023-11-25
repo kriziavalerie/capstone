@@ -1,0 +1,86 @@
+{% extends "layout.html" %} {% block title %}Client Information - Tails Of Freedom{% endblock %} {% block content %}
+<style>
+    span {
+        border-bottom: 1px solid black;
+        display: block;
+        width: 100%;
+    }
+</style>
+<br>
+<div style="display: flex;width: 100%;justify-content: space-between;">
+    <div style="width: 30%;background-color: #ffdcd4;display: flex;justify-content: center;align-items: center;flex-direction: column;">
+        <img src="{% if 'uploaded_images/' in client_animal.client.image_path or '/' == client_animal.client.image_path[:1] %}/static/{{ client_animal.client.image_path }}{% else %}{{ client_animal.client.image_path }}{% endif %}" width="200px" height="200px"
+            alt=" " style="border-radius: 100%;">
+
+        <h1>{{client_animal.client.first_name}} {{client_animal.client.last_name}}</h1>
+    </div>
+    <div style="width: 65%; margin: auto">
+
+        <div style="background-color: #fceeeb; width: 100%; padding: 20px">
+            <div style="
+            background-color: white;
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+          ">
+                <div style="margin: 30px;width: 50%;font-size: 15px;">
+                    Name:<br /><span>{{client_animal.client.first_name}}&nbsp;{{client_animal.client.last_name}}</span>
+                    <br /><br /> Age: <br /><span>{{client_animal.client.age if client_animal.client.age else ""}}
+                    </span><br /><br /> Address: <br /><span>{{client_animal.client.address if client_animal.client.address else ""}} </span><br /><br /> Contact Number:<br /> <span>{{client_animal.client.contact_number if client_animal.client.contact_number
+                        else ""}}</span>
+                    <br> <br> Appointment Date: <br> <span>{{client_animal.appointment_date}}</span>
+                </div>
+
+                <div style="margin: 30px;width: 50%;font-size: 15px;">
+                    Pet Name/s <br /><span>{{client_animal.animal.details.name}}</span><br /><br />Date Applied: <br /><span>{{client_animal.date_applied}}</span>
+                    <br /><br /> Email Address:<br /> <span>{{client_animal.client.email}}</span>
+                    <br /><br /> Application Status<br /> <span>{{client_animal.status}}</span>
+                    <br><br> Appointment Time <br><span class="time">{{client_animal.time_applied}}</span>
+                </div><br><br>
+                <div style="width:50%;margin:auto">
+                </div>
+            </div> <br>
+
+            <div style="background-color: white;width: 80%;margin: auto;padding: 20px;font-size: 15px;">
+                Reasons to Qualify:
+                <div style="margin: 30px;border: 1px solid black;text-align: justify;font-size: 15px;">
+                    {{client_animal.client.reason_to_qualify}}
+                </div>
+            </div>
+        </div>
+        <div style="display: flex;">
+            <form method="POST" style="display: flex;width: 100%;" action="{{ url_for('admin.edit_client_animal', client_id=client_animal.client_id, animal_id=client_animal.animal_id) }}">
+                <button type="submit" name="status" value="pending" style="background-color: #ff5757; border-radius: 10px; color: white; border: none;">PENDING</button>
+                <button type="submit" name="status" value="accept" style="background-color: #ff5757; border-radius: 10px; color: white; border: none;">ACCEPT</button>
+                <button type="submit" name="status" value="decline" style="background-color: #ff5757; border-radius: 10px; color: white; border: none;">DECLINE</button>
+            </form>
+        </div>
+
+
+
+
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var timeElements = document.getElementsByClassName('time');
+
+        for (var i = 0; i < timeElements.length; i++) {
+            var timeElement = timeElements[i];
+            if (timeElement.textContent !== 'N/A') {
+                var timeParts = timeElement.textContent.split(':');
+                var hours = parseInt(timeParts[0]);
+                var minutes = timeParts[1];
+                var ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12 || 12; // Convert 0 to 12
+
+                timeElement.textContent = hours + ':' + minutes + ' ' + ampm;
+            }
+        }
+    });
+</script>
+
+{% endblock %}

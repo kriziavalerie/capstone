@@ -1,0 +1,433 @@
+{% extends "layout.html" %} {% block title %}Add Animal - Tails Of Freedom{% endblock %} {% block content %}
+<style>
+    content {
+        display: flex;
+        height: 110vh;
+        justify-content: space-around;
+        align-items: flex-start;
+        gap: 50px;
+    }
+    
+    .form {
+        background-color: #edecec;
+        min-height: 50%;
+        width: 70%;
+        position: relative;
+    }
+    
+    .image-input {
+        background-color: #fdeeea;
+        height: 50%;
+        width: 30%;
+    }
+    
+    .tab-container {
+        display: flex;
+    }
+    
+    .tab {
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        margin: 40px;
+        margin-bottom: 10px;
+    }
+    
+    .tab-content {
+        display: none;
+        padding: 20px;
+        padding-top: 10px;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .form-container {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-group {
+        background-color: white;
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+    }
+    
+    .form-group div {
+        display: flex;
+        flex-direction: column;
+        width: 45%;
+    }
+    
+    select {
+        all: revert;
+    }
+    
+    select {
+        border: none;
+        border-bottom: 1px solid black;
+    }
+    
+    input {
+        all: revert;
+    }
+    
+    input {
+        border: none;
+        border-bottom: 1px solid black;
+    }
+    
+    label {
+        font-weight: bolder;
+    }
+    
+    .btn-container button {
+        width: 200px;
+        border-radius: 15px;
+        background-color: #ff5757;
+        padding: 15px;
+        color: white;
+        border: none;
+        margin-left: auto;
+        cursor: pointer;
+    }
+    
+    .btn-container button:hover {
+        background-color: red;
+    }
+    
+    .image-input {
+        position: relative;
+    }
+    
+    .image-label {
+        display: block;
+        width: 200px;
+        height: 200px;
+        margin: auto;
+        text-align: center;
+        cursor: pointer;
+        background: url("/static/image-frame.webp") no-repeat center center;
+        border-radius: 100%;
+        background-size: cover;
+        border: 1px solid #ccc;
+        margin-top: 70px;
+    }
+    
+    .image-label img {
+        display: block;
+        width: 50%;
+        height: 100%;
+        opacity: 0;
+        /* Hide the image */
+    }
+    
+    .image-upload {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+    /* Add this style to display the selected image */
+    
+    .image-label.active img {
+        opacity: 1;
+        width: 200px;
+        height: 200px;
+        border-radius: 100%;
+        text-align: center;
+        cursor: pointer;
+    }
+    
+    .image-input input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 50%;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    textarea {
+        border: none;
+    }
+</style>
+<!-- Your content for the add animal page goes here -->
+<content>
+    <div class="form">
+        <div class="tab-container">
+            <button class="tab" id="detailsTab" onclick="openTab('details')">
+        Details
+      </button>
+            <button class="tab" id="healthTab" onclick="openTab('health')">
+        Health
+      <!-- </button>
+            <button class="tab" id="ownerTab" onclick="openTab('owner')">
+        Owner
+      </button>
+            <button class="tab" id="storyTab" onclick="openTab('story')">
+        Story
+      </button> -->
+
+        </div>
+
+        <!-- Details -->
+        <div class="tab-content" id="details">
+            <form action="/animal/details/create" method="POST">
+                <div class="form-container">
+                    <h2>Animal Information</h2>
+
+                    <input type="hidden" name="animal_id" {% if animal_id %} value="{{ animal_id }}" {% endif %} />
+                    <div class="form-group animal-information">
+                        <div>
+                            <label for="name">Name:</label>
+                            <input {% if animal_id %}{% else %} readonly{% endif %} type="text" id="name" name="name" required value="{{ name }}" /><br /><br />
+
+                            <label for="tag_number">Tag Number:</label>
+                            <input{% if animal_id %}{% else %} readonly{% endif %} type="text" id="tag_number" name="tag_number" value="{{ tag_number }}" /><br /><br />
+
+                            <label for="status">Lost/Turned Over/Rescued (Status):</label>
+                            <select id="status" name="status" {% if animal_id %}{% else %} readonly{% endif %}>
+                        <option value="Lost" {% if status == "Lost" %}selected{% endif %}>Lost</option>
+                        <option value="Turned Over" {% if status == "Turned Over" %}selected{% endif %}>Turned Over</option>
+                        <option value="Rescued" {% if status == "Rescued" %}selected{% endif %}>Rescued</option>
+                    </select><br /><br />
+
+                            <label for="estimated_age">Estimated Age:</label>
+                            <input{% if animal_id %}{% else %} readonly{% endif %} type="number" id="estimated_age" name="estimated_age" value="{{ estimated_age }}" /><br /><br />
+                        </div>
+
+                        <div>
+                            <label for="animal_status">Animal Status:</label>
+                            <input {% if animal_id %}{% else %} readonly{% endif %} type="text" id="animal_status" name="animal_status" value="{{ animal_status }}" /><br /><br />
+
+                            <label for="current_weight">Current Weight:</label>
+                            <input{% if animal_id %}{% else %} readonly{% endif %} type="number" step="0.01" id="current_weight" name="current_weight" value="{{ current_weight }}" /><br /><br />
+
+                            <label for="date_of_birth">Date of Birth:</label>
+                            <input{% if animal_id %}{% else %} readonly{% endif %} type="date" id="date_of_birth" name="date_of_birth" value="{{ date_of_birth }}" required pattern="\d{4}-\d{2}-\d{2}" /><br /><br />
+
+                            <label for="date_of_arrival">Date of Arrival:</label>
+                            <input {% if animal_id %}{% else %} readonly{% endif %} type="date" id="date_of_arrival" name="date_of_arrival" value="{{ date_of_arrival }}" required pattern="\d{4}-\d{2}-\d{2}" /><br /><br />
+                        </div>
+                    </div>
+                    <h2>Type Information</h2>
+                    <div class="form-group type-information">
+                        <div>
+                            <label for="animal_type">Type:</label>
+                            <input{% if animal_id %}{% else %} readonly{% endif %} type="text" id="animal_type" name="animal_type" value="{{ animal_type }}" /><br /><br />
+
+                            <label for="coat_type">Coat Type:</label>
+                            <input{% if animal_id %}{% else %} readonly{% endif %} type="text" id="coat_type" name="coat_type" value="{{ coat_type }}" /><br /><br />
+
+                            <label for="primary_color">Primary Color:</label>
+                            <input {% if animal_id %}{% else %} readonly{% endif %}type="text" id="primary_color" name="primary_color" value="{{ primary_color }}" /><br /><br />
+                        </div>
+                        <div>
+                            <label for="secondary_color">Secondary Color:</label>
+                            <input{% if animal_id %}{% else %} readonly{% endif %} type="text" id="secondary_color" name="secondary_color" value="{{ secondary_color }}" /><br /><br />
+
+                            <label for="breed">Breed:</label>
+                            <input{% if animal_id %}{% else %} readonly{% endif %} type="text" id="breed" name="breed" value="{{ breed }}" /><br /><br />
+
+                            <label for="gender">Gender:</label>
+                            <select id="gender" name="gender">
+                        <option value="Male" {% if gender == "Male" %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if gender == "Female" %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if gender == "Other" %}selected{% endif %}>Other</option>
+                    </select><br /><br />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group btn-container">
+                    <button type="submit">SAVE PET DETAILS</button>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- Pet Health -->
+        <div class="tab-content" id="health">
+            <form action="/animal/health/create" method="POST">
+
+                <div class="form-container">
+                    <h2>Medication</h2>
+                    <input type="hidden" name="animal_id" {% if animal_id %} value="{{ animal_id }}" {% endif %} />
+
+                    <div class="form-group medication">
+                        <div>
+                            <label for="health_type">Type:</label>
+                            <input {% if animal_id %}{% else %} readonly{% endif %} type="text" id="health_type" name="health_type" required /><br /><br />
+
+                            <label for="dose">Dose:</label>
+                            <input {% if animal_id %}{% else %} readonly{% endif %} type="text" id="dose" name="dose" /><br /><br />
+
+                            <label for="frequency">Frequency:</label>
+                            <input {% if animal_id %}{% else %} readonly{% endif %} type="text" id="frequency" name="frequency" /><br /><br />
+                        </div>
+                    </div>
+                    <h2>Vaccination</h2>
+
+                    <div class="form-group type-information">
+                        <div>
+                            <label for="rabies_vaccination">Rabies:</label>
+                            <input {% if animal_id %}{% else %} readonly{% endif %} type="text" id="rabies" name="rabies" /><br /><br />
+
+                            <label for="deworming">Deworming:</label>
+                            <input {% if animal_id %}{% else %} readonly{% endif %} type="text" id="deworming" name="deworming" /><br /><br />
+
+                            <label for="health_frequency">Frequency</label>
+                            <input {% if animal_id %}{% else %} readonly{% endif %} type="text" id="health_frequency" name="health_frequency" /><br /><br />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group btn-container">
+                    <button type="submit">ADD PET HEALTH</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Pet Owner -->
+        <div class="tab-content" id="owner">
+            <form method="POST" action="/animal/owner/create">
+                <div class="form-container">
+                    <div class="form-group owner">
+                        <div>
+                            <input type="hidden" name="animal_id" {% if animal_id %} value="{{ animal_id }}" {% endif %} />
+
+                            <label for="name">Owner Name:</label>
+                            <input type="name" id="name" name="name" required />
+                            <br /><br />
+                            <label for="address">Address:</label>
+                            <input type="text" id="address" name="address" required /><br /><br />
+
+                            <label for="contact_number">Contact Number:</label>
+                            <input type="text" id="contact_number" name="contact_number" /><br /><br />
+
+                            <label for="email_address">Email Address:</label>
+                            <input type="email" id="email_address" name="email_address" /><br /><br />
+
+                            <label for="age">Age:</label>
+                            <input type="number" id="age" name="age" /><br /><br />
+                        </div>
+                        <div>
+                            <label for="date_applied">Date Applied:</label>
+                            <input type="date" id="date_applied" name="date_applied" required pattern="\d{4}-\d{2}-\d{2}" /><br /><br />
+
+                            <label for="date_adopted">Date Adopted:</label>
+                            <input type="date" id="date_adopted" name="date_adopted" required pattern="\d{4}-\d{2}-\d{2}" /><br /><br />
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group btn-container">
+                    <button type="submit">ADD PET OWNER</button>
+                </div>
+            </form>
+        </div>
+
+
+        <div class="tab-content" id="story">
+            <form action="/animal/story/create" method="post">
+                <div class="form-container">
+                    <div class="form-group story">
+                        <input type="hidden" name="animal_id" {% if animal_id %} value="{{ animal_id }}" {% endif %} />
+
+                        <textarea style="width: 100%; min-height: 400px" name="story"> </textarea>
+                    </div>
+                </div>
+
+                <div class="form-group btn-container">
+                    <button type="submit">ADD PET STORY</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="image-input">
+        <form method="POST" action="/animal/create" enctype="multipart/form-data" style="all: revert">
+            <label for="image_path" class="image-label{% if relative_image_path %} active{% endif %}">
+        <img
+          src="{% if relative_image_path %}/static/{{ relative_image_path }}{% else %}/static/imageplaceholder.jfif{% endif %}"
+          alt="Uploaded Image"
+          width="150"
+          height="200"
+        />
+        <i class="fas fa-info-circle"></i>
+Click to add picture
+
+      </label>
+
+            <input type="file" id="image_path" name="image_path" accept="image/*" class="image-upload{% if relative_image_path %} disabled{% endif %}" onchange="displayImage(this)" {% if relative_image_path %}disabled{% endif %} required />
+
+            <div class="form-group btn-container" style="background-color: transparent{% if relative_image_path %};display: none;{% endif %}">
+                <button type="submit" style="margin: auto">SAVE PET IMAGE</button>
+            </div>
+        </form>
+    </div>
+</content>
+
+<script>
+    function openTab(tabName) {
+        // Get all elements with class "tab-content" and hide them
+        const tabContents = document.getElementsByClassName("tab-content");
+        for (const content of tabContents) {
+            content.style.display = "none";
+        }
+
+        // Get all elements with class "tab" and remove the "active" class
+        const tabs = document.getElementsByClassName("tab");
+        for (const tab of tabs) {
+            tab.classList.remove("active");
+        }
+
+        // Show the selected tab and add the "active" class to the button
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName + "Tab").classList.add("active");
+    }
+
+    function displayImage(input) {
+        const label = input.parentElement.querySelector(".image-label");
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                label.querySelector("img").src = e.target.result;
+                label.classList.add("active");
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            label.querySelector("img").src = "/static/imageplaceholder.jfif";
+            label.classList.remove("active");
+        }
+    }
+
+
+    function displayImage2(input) {
+        const label = input.parentElement.querySelector(".image-label2");
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                label.querySelector("img").src = e.target.result;
+                label.classList.add("active");
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            label.querySelector("img").src = "/static/imageplaceholder.jfif";
+            label.classList.remove("active");
+        }
+    }
+
+
+    // Open the "Details" tab by default
+    openTab("details");
+</script>
+<!-- Form and other content specific to this page -->
+{% endblock %}

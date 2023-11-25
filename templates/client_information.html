@@ -1,0 +1,119 @@
+{% extends "layout.html" %} {% block title %}Client Information - Tails Of Freedom{% endblock %} {% block content %}
+
+<style>
+    .full-width-element {
+        width: 100%;
+        background: repeating-linear-gradient(to right, transparent, transparent 20px, #000 20px, #000 40px);
+        /* Repeating slash pattern */
+        height: 40px;
+        /* Set the height as needed */
+    }
+    
+    a {
+        display: inline;
+    }
+</style>
+
+<br><br>
+
+<div style="width:80%;margin:auto;display: flex;justify-content: space-evenly;">
+    <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input type="text" class="search-input" placeholder="Search by name or pet name" style="padding: 10px; background-color: transparent">
+    </div>
+    <div class="sort-container">
+        <div class="custom-select">
+            <select id="sort-by" style="font-size: 25px;">
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="accept">Accept</option>
+                <option value="decline">Decline</option>
+            </select>
+        </div>
+    </div>
+</div>
+<br><br>
+<br><br>
+<div style="width: 100%; margin: auto; display: flex;font-size: 20px;">
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Pet Name</th>
+            <th>Status</th>
+            <th>Date Applied</th>
+        </tr>
+        {% for clientanimal in clientanimals %}
+        <tr class="clickable-row" style="cursor: pointer" data-href="{{ url_for('admin.edit_client_animal', client_id=clientanimal.client_id, animal_id=clientanimal.animal_id) }}">
+            <td style="display: flex;align-items: center;gap: 20px;"> <img src="{% if 'uploaded_images/' in clientanimal.client.image_path or '/' == clientanimal.client.image_path[:1] %}/static/{{ clientanimal.client.image_path }}{% else %}{{ volunteer.client.image_path }}{% endif %}" width="50px" height="50px"
+                    alt=" " style="border-radius: 100%;"> {{ clientanimal.client.first_name }} {{ clientanimal.client.last_name }}</td>
+            <td>{{ clientanimal.animal.details.name if clientanimal.animal.details.name else 'N/A' }}</td>
+            <td>{{ clientanimal.status }}</td>
+            <td>{{ clientanimal.date_applied }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+
+
+
+</div>
+
+
+
+</body>
+
+</html>
+<script>
+    const tabs = document.querySelectorAll('.tab');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+
+            // Add the "active" class to the clicked tab
+            tab.classList.add('active');
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var rows = document.querySelectorAll(".clickable-row");
+        rows.forEach(function(row) {
+            row.addEventListener("click", function() {
+                window.location = row.getAttribute("data-href");
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var rows = document.querySelectorAll(".clickable-row");
+        var searchInput = document.querySelector(".search-input");
+        var sortSelect = document.querySelector("#sort-by");
+
+        searchInput.addEventListener("input", filterTable);
+        sortSelect.addEventListener("change", filterTable);
+
+        filterTable();
+
+        function filterTable() {
+            var searchValue = searchInput.value.toLowerCase();
+            var statusFilter = sortSelect.value.toLowerCase();
+
+            rows.forEach(function(row) {
+                var name = row.querySelector("td:first-child").textContent.toLowerCase();
+                var petName = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+                var status = row.querySelector("td:nth-child(3)").textContent.toLowerCase();
+
+                if (
+                    (name.includes(searchValue) || petName.includes(searchValue)) &&
+                    (statusFilter === "all" || status === statusFilter)
+                ) {
+                    row.style.display = "table-row";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

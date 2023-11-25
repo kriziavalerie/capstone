@@ -1,0 +1,57 @@
+{% extends "layout.html" %} {% block title %}View Volunteer - Tails Of Freedom{% endblock %} {% block content %}
+
+<style>
+    span {
+        border-bottom: 1px solid black;
+        display: block;
+        width: 100%;
+    }
+</style>
+<br>
+<br>
+<div style="display: flex;justify-content: space-between; width: 100%;">
+
+    <div style="width: 30%;background-color: #ffdcd4;display: flex;justify-content: center;align-items: center;flex-direction: column;">
+        <img src="{% if 'uploaded_images/' in volunteer.client.image_path or '/' == volunteer.client.image_path[:1] %}/static/{{ volunteer.client.image_path }}{% else %}{{ volunteer.client.image_path }}{% endif %}" width="200px" height="200px" alt=" " style="border-radius: 100%;">
+
+        <h1>{{volunteer.client.first_name}} {{volunteer.client.last_name}}</h1>
+    </div>
+    <div style="width: 65%; margin: auto">
+
+
+        <div style="background-color: #fceeeb; width: 100%; padding: 20px">
+            <div style="
+            background-color: white;
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+          ">
+
+                <div style="margin: 30px; width: 50%;">
+                    Name:<br /><span>{{ volunteer.client.first_name }}&nbsp;{{ volunteer.client.last_name }}</span>
+
+                    <br /><br /> Contact Number:<br /> <span>{{ volunteer.client.contact_number if volunteer.client.contact_number else "N/A" }}</span>
+                    <br /><br /> Email:<br /> <span>{{ volunteer.client.email if volunteer.client.email else "N/A" }}</span>
+                    <br /><br /> Application Status<br /> <span>{{ volunteer.application_status }}</span>
+
+                </div>
+
+                <div style="margin: 30px; width: 50%;">
+                    Date Applied: <br /><span>{{ volunteer.date_applied }}</span>
+                    <br /><br /> Age: <br /><span>{{ volunteer.client.age if volunteer.client.age else "N/A" }}</span>
+                    <br /><br /> Address: <br /><span>{{ volunteer.client.address if volunteer.client.address else "N/A" }}</span>
+                </div>
+            </div> <br>
+
+        </div>
+        <div style="display: flex;">
+            <form method="POST" style="display: flex; width: 100%;justify-content: center;" action="{{ url_for('admin.edit_volunteer', volunteer_id=volunteer.id) }}">
+                <button type="submit" name="status" value="accept" style="background-color: #ff5757; border-radius: 10px; color: white;border: none;width: 200px;margin: auto;margin-top: 10px;border: none;">ACCEPT</button>
+                <button type="submit" name="status" value="decline" style="background-color: #ff5757; border-radius: 10px; color: white;border: none;width: 200px;margin: auto;margin-top: 10px;border: none;">DECLINE</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

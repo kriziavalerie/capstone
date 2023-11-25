@@ -1,0 +1,58 @@
+<style>
+    .full-width-element {
+        width: 100%;
+        background: repeating-linear-gradient(to right, transparent, transparent 20px, #000 20px, #000 40px);
+        /* Repeating slash pattern */
+        height: 40px;
+        /* Set the height as needed */
+    }
+    
+    a {
+        display: inline;
+    }
+    
+    .alert-container {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    
+    .alert {
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: lightgreen;
+        color: #333;
+        margin: 10px 0;
+        opacity: 0;
+        transform: translateX(100%);
+        /* Start from the right */
+        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    }
+    
+    .alert-show {
+        opacity: 1;
+        transform: translateX(0);
+        /* Slide in from the right */
+    }
+    
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+    
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+</style>
+
+{% extends "client_layout.html" %} {% block title %}Dashboard - Tails Of Freedom{% endblock %} {% block content %}
+<!-- Your content for the add animal page goes here -->
+<!-- Form and other content specific to this page -->
+{% endblock %}

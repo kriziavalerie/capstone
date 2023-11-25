@@ -1,0 +1,331 @@
+{% extends "client_layout.html" %} {% block title %}Personal Details - Tails Of Freedom{% endblock %} {% block content %}
+<style>
+    content {
+        display: flex;
+        height: 110vh;
+        justify-content: space-around;
+        align-items: flex-start;
+        gap: 50px;
+    }
+    
+    .form {
+        background-color: #edecec;
+        min-height: 50%;
+        width: 70%;
+        position: relative;
+    }
+    
+    .image-input {
+        background-color: #fdeeea;
+        height: 50%;
+        width: 30%;
+    }
+    
+    .tab-container {
+        display: flex;
+    }
+    
+    .tab {
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        margin: 40px;
+        margin-bottom: 10px;
+    }
+    
+    .tab-content {
+        display: none;
+        padding: 20px;
+        padding-top: 10px;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .form-container {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-group {
+        background-color: white;
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+    }
+    
+    .form-group div {
+        display: flex;
+        flex-direction: column;
+        width: 45%;
+    }
+    
+    select {
+        all: revert;
+    }
+    
+    select {
+        border: none;
+        border-bottom: 1px solid black;
+    }
+    
+    input {
+        all: revert;
+    }
+    
+    input {
+        border: none;
+        border-bottom: 1px solid black;
+    }
+    
+    label {
+        font-weight: bolder;
+    }
+    
+    .btn-container button {
+        width: 200px;
+        border-radius: 15px;
+        background-color: #ff5757;
+        padding: 15px;
+        color: white;
+        border: none;
+        margin-left: auto;
+        cursor: pointer;
+    }
+    
+    .btn-container button:hover {
+        background-color: red;
+    }
+    
+    .image-input {
+        position: relative;
+    }
+    
+    .image-label {
+        display: block;
+        width: 200px;
+        height: 200px;
+        margin: auto;
+        text-align: center;
+        cursor: pointer;
+        background: url("/static/image-frame.webp") no-repeat center center;
+        border-radius: 100%;
+        background-size: cover;
+        border: 1px solid #ccc;
+        margin-top: 70px;
+    }
+    
+    .image-label img {
+        display: block;
+        width: 50%;
+        height: 100%;
+        opacity: 0;
+        /* Hide the image */
+    }
+    
+    .image-upload {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+    /* Add this style to display the selected image */
+    
+    .image-label.active img {
+        opacity: 1;
+        width: 200px;
+        height: 200px;
+        border-radius: 100%;
+        text-align: center;
+        cursor: pointer;
+    }
+    
+    .image-input input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 50%;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    textarea {
+        border: none;
+    }
+</style>
+<!-- Your content for the add animal page goes here -->
+<content>
+    <div style="width:30%;display: flex;justify-content: center;flex-direction: column;">
+        <img src="/static/{{ animal.image_path }}" alt="" style="border-radius: 100%;margin: auto;width:225px;height:225px">
+        <h1 style="text-align: center;">
+            Hi! I'm {{animal_detail.name}}. <br>I love to chase ball. <br>Can you be my pawmily?
+        </h1>
+        <form method="get" action="{{ url_for('client.add_to_pawmily', animal_id=animal.id) }}">
+            <button type="submit" style="font-size: 20px; font-weight: bolder; display: flex; justify-content: space-around; align-items: center; cursor: pointer;">
+                Add to Pawmily
+                <i class="fas fa-paw" style="color: #51504a; font-size: 30px;"></i>
+            </button>
+        </form>
+    </div>
+    <div class="form">
+        <div class="tab-container">
+            <button class="tab" id="detailsTab" onclick="openTab('details')">
+        Details
+      </button>
+            <button class="tab" id="healthTab" onclick="openTab('health')">
+        Health
+      </button>
+
+        </div>
+
+        <!-- Details -->
+        <div class="tab-content" id="details">
+            <form>
+                <div class="form-container">
+                    <h2>Animal Information</h2>
+                    <input type="hidden" name="animal_id" value="{{ animal_detail.animal_id }}" />
+                    <div class="form-group animal-information">
+                        <div>
+                            <label for="name">Name:</label>
+                            <input readonly type="text" id="name" name="name" required value="{{ animal_detail.name }}" /><br /><br />
+
+                            <label for="tag_number">Tag Number:</label>
+                            <input readonly type="text" id="tag_number" name="tag_number" value="{{ animal_detail.tag_number }}" /><br /><br />
+
+                            <label for="status">Lost/Turned Over/Rescued (Status):</label>
+                            <select id="status" name="status">
+                        <option value="Lost" {% if animal_detail.status == "Lost" %}selected{% endif %}>Lost</option>
+                        <option value="Turned Over" {% if animal_detail.status == "Turned Over" %}selected{% endif %}>Turned Over</option>
+                        <option value="Rescued" {% if animal_detail.status == "Rescued" %}selected{% endif %}>Rescued</option>
+                    </select><br /><br />
+
+                            <label for="estimated_age">Estimated Age:</label>
+                            <input readonly type="number" id="estimated_age" name="estimated_age" value="{{ animal_detail.estimated_age }}" /><br /><br />
+                        </div>
+
+                        <div>
+                            <label for="animal_status">Animal Status:</label>
+                            <input readonly type="text" id="animal_status" name="animal_status" value="{{ animal_detail.animal_status }}" /><br /><br />
+
+                            <label for="current_weight">Current Weight:</label>
+                            <input readonly type="number" step="0.01" id="current_weight" name="current_weight" value="{{ animal_detail.current_weight }}" /><br /><br />
+
+                            <label for="date_of_birth">Date of Birth:</label>
+                            <input readonly type="date" id="date_of_birth" name="date_of_birth" value="{{ animal_detail.date_of_birth | default('') }}" required pattern="\d{4}-\d{2}-\d{2}" /><br /><br />
+
+                            <label for="date_of_arrival">Date of Arrival:</label>
+                            <input readonly type="date" id="date_of_arrival" name="date_of_arrival" value="{{ animal_detail.date_of_arrival | default('') }}" required pattern="\d{4}-\d{2}-\d{2}" /><br /><br />
+                        </div>
+                    </div>
+                    <h2>Type Information</h2>
+                    <div class="form-group type-information">
+                        <div>
+                            <label for="animal_type">Type:</label>
+                            <input readonly type="text" id="animal_type" name="animal_type" value="{{ animal_detail.animal_type }}" /><br /><br />
+
+                            <label for="coat_type">Coat Type:</label>
+                            <input readonly type="text" id="coat_type" name="coat_type" value="{{ animal_detail.coat_type }}" /><br /><br />
+
+                            <label for="primary_color">Primary Color:</label>
+                            <input readonly type="text" id="primary_color" name="primary_color" value="{{ animal_detail.primary_color }}" /><br /><br />
+                        </div>
+                        <div>
+                            <label for="secondary_color">Secondary Color:</label>
+                            <input readonly type="text" id="secondary_color" name="secondary_color" value="{{ animal_detail.secondary_color }}" /><br /><br />
+
+                            <label for="breed">Breed:</label>
+                            <input readonly type="text" id="breed" name="breed" value="{{ animal_detail.breed }}" /><br /><br />
+
+                            <label for="gender">Gender:</label>
+                            <select id="gender" name="gender">
+                        <option value="Male" {% if animal_detail.gender == "Male" %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if animal_detail.gender == "Female" %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if animal_detail.gender == "Other" %}selected{% endif %}>Other</option>
+                    </select><br /><br />
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+
+        <!-- Pet Health -->
+        <div class="tab-content" id="health">
+            <form>
+                <div class="form-container">
+                    <h2>Medication</h2>
+                    <input readonly type="hidden" name="animal_id" value="{{ animal_detail.animal_id }}" />
+
+                    <div class="form-group medication">
+                        <div>
+                            <label for="health_type">Type:</label>
+                            <input readonly type="text" id="health_type" name="health_type" value="{{ animal_health.health_type }}" required /><br /><br />
+
+                            <label for="dose">Dose:</label>
+                            <input readonly type="text" id="dose" name="dose" value="{{ animal_health.dose }}" /><br /><br />
+
+                            <label for="frequency">Frequency:</label>
+                            <input readonly type="text" id="frequency" name="frequency" value="{{ animal_health.frequency }}" /><br /><br />
+                        </div>
+                    </div>
+                    <h2>Vaccination</h2>
+
+                    <div class="form-group type-information">
+                        <div>
+                            <label for="rabies_vaccination">Rabies:</label>
+                            <input readonly type="text" id="rabies_vaccination" name="rabies_vaccination" value="{{ animal_health.rabies_vaccination }}" /><br /><br />
+
+                            <label for="deworming">Deworming:</label>
+                            <input readonly type="text" id="deworming" name="deworming" value="{{ animal_health.deworming }}" /><br /><br />
+
+                            <label for="health_frequency">Frequency:</label>
+                            <input readonly type="text" id="health_frequency" name="health_frequency" value="{{ animal_health.health_frequency }}" /><br /><br />
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+
+</content>
+<script>
+    function openTab(tabName) {
+        // Get all elements with class "tab-content" and hide them
+        const tabContents = document.getElementsByClassName("tab-content");
+        for (const content of tabContents) {
+            content.style.display = "none";
+        }
+
+        // Get all elements with class "tab" and remove the "active" class
+        const tabs = document.getElementsByClassName("tab");
+        for (const tab of tabs) {
+            tab.classList.remove("active");
+        }
+
+        // Show the selected tab and add the "active" class to the button
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName + "Tab").classList.add("active");
+    }
+
+    // Open the "Details" tab by default
+    openTab("details");
+</script>
+<!-- Form and other content specific to this page -->
+{% endblock %}

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        .alert-container {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .alert {
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #FF9A8B;
+            color: #333;
+            margin: 10px 0;
+            opacity: 0;
+            transform: translateX(100%);
+            /* Start from the right */
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        
+        .alert-show {
+            opacity: 1;
+            transform: translateX(0);
+            /* Slide in from the right */
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <form action="/register" method="POST" class="LoginForm RegisterForm" id="registrationForm" style="position:relative;">
+            <h1 style="color: #423F32;">Create Account</h1>
+            <h2 style="position:absolute;right:10px;top:10px;cursor:pointer;padding-right: 15px;" class="close"><i class="fas fa-close"></i></h2>
+            <div style="display:flex;gap:20px;padding-top: 70px;">
+                <input type="text" style="text-align:center" name="firstname" placeholder="First Name" value="{{ request.form.firstname }}">
+                <input type="text" style="text-align:center" name="lastname" placeholder="Last Name" value="{{ request.form.lastname }}">
+            </div>
+            <input type="text" name="username" placeholder="Username" required style="text-align: center;" value="{{ request.form.username }}">
+            <input type="email" name="email" placeholder="Email" required style="text-align: center;" value="{{ request.form.email }}">
+            <input type="password" name="password" placeholder="Password" required style="text-align: center;">
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required style="text-align: center" />
+
+            <button type="type" id="submitForm">Sign Up</button>
+            <h5>or</h5>
+            <button type="button">
+                <a href="{{ url_for('google_oauth.google_login') }}" style="display: flex; align-items: center; justify-content: center; text-decoration: none;position: relative;color:black">
+                    <img src="/static/Google_Icons-09-512.webp" alt="Google Logo" style="height: 40px; position: absolute; left: 10px;">
+                    Sign in with Google
+                </a>
+            </button>
+
+
+        </form>
+
+    </main>
+
+    <!-- Display Flash Messages as Alerts with Animation and Auto-Dismissal -->
+    <div class="alert-container">
+        {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+        <div class="alert alert-{{ message.category }} alert-show">
+            {{ message }}
+        </div>
+        {% endfor %} {% endif %} {% endwith %}
+    </div>
+</body>
+
+</html>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Add a submit event handler for the form
+    $("#registrationForm").on("submit", function(event) {
+        // Prevent the default form submission behavior
+        event.preventDefault();
+
+        // Get the form data
+        const formData = $(this).serialize();
+
+        // Send an AJAX POST request to the "/register" endpoint
+        $.ajax({
+            type: "POST",
+            url: "/register", // Specify the correct URL
+            data: formData,
+            success: function(response) {
+                // Handle the success response from the server
+                console.log(response);
+                $("body").html(response);
+                document.querySelectorAll('.alert-show').forEach((element, index) => {
+                    // Slide in from the right
+                    element.style.transform = 'translateX(100%)';
+                    element.style.transition = 'transform 0.5s ease-in-out';
+
+                    setTimeout(() => {
+                        // Slide in from the right to the center
+                        element.style.transform = 'translateX(0)';
+                    }, 50 * (index + 1)); // Adjust the delay as needed (50ms in this example)
+
+                    setTimeout(() => {
+                        // Slide out to the left
+                        element.style.transform = 'translateX(100%)';
+                    }, 3000 * (index + 2)); // Adjust the delay as needed (3 seconds in this example)
+
+                    setTimeout(() => {
+                        // Hide the element
+                        element.style.display = 'none';
+                    }, 3500 * (index + 2)); // Adjust the delay as needed
+                });
+
+
+            },
+            error: function(error) {
+                $("#registerModal .modal-content").html(error);
+                $("#registerModal").show();
+            }
+        });
+    });
+
+    // Close the modal when clicking outside of the form
+    $("#registerModal").on("click", function(e) {
+        if ($(e.target).closest(".modal-content").length === 0) {
+            $(this).hide();
+        }
+    });
+    // Close the modal when clicking anywhere on the document except inside the form
+    $(document).on("click", function(e) {
+        if (!$(e.target).closest(".modal-content").length && !$(e.target).is(registerModal)) {
+            $("#registerModal").hide();
+        }
+    });
+
+    // Close the modal when clicking outside of the form
+    $(".close").on("click", function(e) {
+        $("#registerModal").hide();
+
+    });
+</script>

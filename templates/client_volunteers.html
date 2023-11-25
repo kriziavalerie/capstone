@@ -1,0 +1,196 @@
+{% extends "client_layout.html" %} {% block title %}Volunteer - Tails Of Freedom{% endblock %} {% block content %}
+<style>
+    .full-width-element {
+        width: 100%;
+        background: repeating-linear-gradient(to right, transparent, transparent 20px, #000 20px, #000 40px);
+        /* Repeating slash pattern */
+        height: 40px;
+        /* Set the height as needed */
+    }
+    
+    a {
+        display: inline;
+    }
+    /* Reduce the size of the calendar container */
+    
+    .fc-daygrid-day {
+        border: none !important;
+    }
+    
+    .fc-daygrid-day-number {
+        width: auto !important;
+    }
+    
+    .fc-toolbar-title {
+        font-family: "Dancing Script", cursive;
+    }
+    
+    .fc .fc-daygrid-day-top {
+        display: block;
+    }
+    
+    .fc .fc-daygrid-day-top .fc-daygrid-day-number {
+        display: block;
+        width: 100%;
+        margin: auto;
+        text-align: center;
+    }
+    
+    .fc-daygrid-day-events {
+        display: none;
+    }
+    
+    #calendar {
+        width: 400px;
+        height: 450px;
+        background-color: #fcfbf4;
+        margin-right: 50px;
+        overflow-y: hidden;
+    }
+    
+    .fc-dayGrid-event,
+    .fc-timegrid-event {
+        font-size: 12px;
+        /* Adjust the font size as needed */
+    }
+    
+    .fc-col-header-cell.fc-day {
+        font-size: 12px;
+        /* Adjust the font size as needed */
+    }
+    /* Adjust the size of the day cells and their contents */
+    
+    .fc-day,
+    .fc-day-top,
+    .fc-day-header,
+    .fc-day-number {
+        width: 50px;
+        /* Adjust the width as needed */
+        height: 50px;
+        /* Adjust the height as needed */
+        font-size: 15px;
+        /* Adjust the font size as needed */
+    }
+    
+    .fc-col-header-cell.fc-day {
+        font-size: 12px;
+        border: none !important;
+    }
+    
+    .fc .fc-scrollgrid {
+        border: none;
+        overflow: hidden;
+    }
+    
+    input {
+        background-color: white;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+<br>
+<br>
+
+<h3 style="margin: auto;display: flex;align-items: center; margin-left: 45px;"><i class="fas fa-circle-info"></i>&nbsp; Click the Dates that are available <span style="margin-left: 10px; display: inline-block;width: 25px;height: 25px;background-color: #ccb4ad;border-radius: 100%;text-align: center;"></span></h3>
+
+<br>
+<br>
+<div style="display: flex;justify-content: space-around;margin: auto;">
+
+
+    <div id="calendar" class="calendar"></div>
+    <div style="height:460px;width:35%;background-color: #f8dcd4;">
+        <form action="{{ url_for('client.apply') }}" method="POST">
+            <div class="form-group">
+                <label style="font-weight:bolder;margin-right: auto;margin-left: 25px;font-size:18px;" for="date_applied">Date:</label>
+                <input type="date" name="date_applied" id="date_applied" readonly required>
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight:bolder;margin-right: auto;margin-left: 25px;font-size:18px;" for="time_applied">Time:</label>
+                <input type="time" name="time_applied" id="time_applied" pattern="%I:%M %p" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" style="background-color:#fae6e1;color:black;cursor:pointer;border: none;text-transform: uppercase;font-weight: bolder;font-size: 20px;border-radius: 25px;width: 300px;margin:auto;padding: 15px;">Confirm</button>
+            </div>
+        </form>
+        <div style="display: flex;justify-content: center;">
+            <h1 style="font-family: 'Dancing Script',cursive;
+        font-weight: bolder;margin: auto;font-size: 60px;">Thank You</h1>
+
+        </div>
+
+    </div>
+    <div> <img src="/static/volunteer_logo.jpg"  alt=""></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                start: '',
+                center: 'title',
+                end: 'prev,next'
+            },
+            dayCellContent: function(info) {
+                return info.dayNumberText;
+            },
+            dayHeaderContent: function(info) {
+                var dayName = info.date.toLocaleDateString('en-US', {
+                    weekday: 'short'
+                });
+                return dayName.charAt(0);
+            },
+            dateClick: function(info) {
+                // Check if the clicked date has a light green background
+                var dayNumberEl = info.dayEl.querySelector('.fc-daygrid-day-number');
+                if (dayNumberEl.style.backgroundColor === 'rgb(204, 180, 173)') {
+                    // Set the clicked date as the date_applied input
+                    var selectedDate = info.dateStr;
+                    document.getElementById('date_applied').value = selectedDate;
+                }
+            }
+        });
+        calendar.render();
+
+        // Apply styles on page load using a for loop
+        var savedDates = JSON.parse(localStorage.getItem('selectedDates')) || {};
+        for (var date in savedDates) {
+            var formattedDate = new Date(date);
+            var day = formattedDate.getDate();
+            var month = formattedDate.getMonth() + 1; // Months are zero-based
+            var year = formattedDate.getFullYear();
+
+            // Format the date as "YYYY-MM-DD"
+            var formattedDateString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+            // Select the date element and apply the style directly
+            var dayEl = document.querySelector(`[data-date="${formattedDateString}"]`);
+            if (dayEl) {
+
+                var dayNumberEl = dayEl.querySelector('.fc-daygrid-day-number');
+                dayNumberEl.style.backgroundColor = savedDates[date].backgroundColor;
+
+                // Apply border radius to the day number element
+                dayNumberEl.style.borderRadius = '100%';
+            }
+        }
+    });
+</script>
+
+
+
+{% endblock %}

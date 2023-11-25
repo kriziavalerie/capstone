@@ -1,0 +1,349 @@
+{% extends "layout.html" %} {% block title %}Volunteers - Tails Of Freedom{% endblock %} {% block content %}
+<style>
+    .full-width-element {
+        width: 100%;
+        background: repeating-linear-gradient(to right, transparent, transparent 20px, #000 20px, #000 40px);
+        /* Repeating slash pattern */
+        height: 40px;
+        /* Set the height as needed */
+    }
+    
+    a {
+        display: inline;
+    }
+    /* Reduce the size of the calendar container */
+    
+    table {
+        margin: 0;
+    }
+    
+    .fc-daygrid-day {
+        border: none !important;
+    }
+    
+    .fc-daygrid-day-number {
+        width: auto !important;
+    }
+    
+    .fc-toolbar-title {
+        font-family: "Dancing Script", cursive;
+    }
+    
+    .fc .fc-daygrid-day-top {
+        display: block;
+    }
+    
+    .fc .fc-daygrid-day-top .fc-daygrid-day-number {
+        display: block;
+        width: 100%;
+        margin: auto;
+        text-align: center;
+    }
+    
+    .fc-daygrid-day-events {
+        display: none;
+    }
+    
+    #calendar {
+        width: 400px;
+        height: 450px;
+        background-color: #fcfbf4;
+        margin-right: 50px;
+        overflow-y: hidden;
+    }
+    
+    .fc-dayGrid-event,
+    .fc-timegrid-event {
+        font-size: 12px;
+        /* Adjust the font size as needed */
+    }
+    
+    .fc-col-header-cell.fc-day {
+        font-size: 12px;
+        /* Adjust the font size as needed */
+    }
+    /* Adjust the size of the day cells and their contents */
+    
+    .fc-day,
+    .fc-day-top,
+    .fc-day-header,
+    .fc-day-number {
+        width: 50px;
+        /* Adjust the width as needed */
+        height: 50px;
+        /* Adjust the height as needed */
+        font-size: 15px;
+        /* Adjust the font size as needed */
+    }
+    
+    .fc-col-header-cell.fc-day {
+        font-size: 12px;
+        border: none !important;
+    }
+    
+    .fc .fc-scrollgrid {
+        border: none;
+        overflow: hidden;
+    }
+</style>
+<br><br>
+
+<div style="margin: auto;display: flex;overflow: hidden;justify-content: space-evenly;">
+    <div id="calendar" class="calendar">
+
+
+    </div>
+
+
+    <div style="width: 50%;">
+        <div style="margin:auto; display: flex; justify-content: start; gap: 50px;">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" placeholder="Search by name or pet name" style="padding: 10px; background-color: transparent" id="searchInput">
+            </div>
+            <div class="sort-container">
+                <div class="custom-select" style="height: 60px;">
+                    <select id="sort-by" style="font-size: 25px">
+                        <option value="sort" style="text-align: center">Sort By</option>
+                        <option value="pending">Pending</option>
+                        <option value="accept">Accept</option>
+                        <option value="decline">Decline</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+        <br><br>
+        <table id="volunteersTable" style="margin-bottom: auto!important; width: 100%; font-size: 20px">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Date Applied</th>
+                    <th>Time Applied</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for volunteer in volunteers %}
+                <tr data-name="{{ volunteer.client.first_name }} {{ volunteer.client.last_name }}" data-status="{{ volunteer.application_status }}" data-date="{{ volunteer.date_applied|default('N/A') }}" data-time="{{ volunteer.time_applied|default('N/A') }}" onclick="editVolunteer('{{ volunteer.id }}')"
+                    style="cursor: pointer;">
+                    <td style="display: flex;align-items: center;gap: 20px;"> <img src="{% if 'uploaded_images/' in volunteer.client.image_path or '/' == volunteer.client.image_path[:1] %}/static/{{ volunteer.client.image_path }}{% else %}{{ volunteer.client.image_path }}{% endif %}" width="50px" height="50px"
+                            alt=" " style="border-radius: 100%;"> {{ volunteer.client.first_name }} {{ volunteer.client.last_name }}</td>
+                    <td>{{ volunteer.application_status }}</td>
+                    <td>{{ volunteer.date_applied|default('N/A') }}</td>
+                    <td class="time">{{ volunteer.time_applied|default('N/A') }}</td>
+                </tr>
+                <form id="editForm{{ volunteer.id }}" method="get" action="{{ url_for('admin.edit_volunteer', volunteer_id=volunteer.id) }}">
+                    <!-- Hidden form fields, if needed -->
+                </form>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+
+</div>
+<br>
+<div style="display: flex;align-items: flex-start;justify-content:center;gap: 10px;margin-left: 100px;flex-direction: column;">
+    <h3>
+
+        <i class="fas fa-info-circle"></i> Click to make the Dates that are availables</h3>
+
+    <div style="display: flex; gap: 20px;align-items: center;justify-content: center;">
+
+        <div style="width: 50px;background-color: #ccb4ad;height: 50px;"></div>
+        <h>
+            <i class="fas fa-info-circle"></i> Dates that are available</h>
+        <div style="width: 50px;background-color: #fff7d9;height: 50px;"></div><span></span> <i class="fas fa-info-circle"></i> Today
+        </span>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.js">
+</script>
+
+
+<script>
+    function editVolunteer(id) {
+        document.getElementById(`editForm${id}`).submit();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                start: '',
+                center: 'title',
+                end: 'prev,next'
+            },
+            dayCellContent: function(info) {
+                return info.dayNumberText;
+            },
+            dayHeaderContent: function(info) {
+                var dayName = info.date.toLocaleDateString('en-US', {
+                    weekday: 'short'
+                });
+                return dayName.charAt(0);
+            },
+            dateClick: function(info) {
+                // Retrieve the selected date in the format you need
+                var selectedDate = info.dateStr;
+
+                // Check if this date was previously selected and saved
+                var savedDates = JSON.parse(localStorage.getItem('selectedDates')) || {};
+
+                if (selectedDate in savedDates) {
+                    // Date was previously selected, remove its style
+                    var dayNumberEl = info.dayEl.querySelector('.fc-daygrid-day-number');
+
+                    dayNumberEl.style.backgroundColor = '';
+                    // Remove it from the savedDates
+                    delete savedDates[selectedDate];
+                } else {
+                    // Retrieve the day number element within the clicked date cell
+                    var dayNumberEl = info.dayEl.querySelector('.fc-daygrid-day-number');
+                    dayNumberEl.style.backgroundColor = '#ccb4ad';
+
+                    // Apply border radius to the day number element
+                    dayNumberEl.style.borderRadius = '100%';
+
+
+                    // Save the selected date and its style
+                    savedDates[selectedDate] = {
+                        backgroundColor: '#ccb4ad'
+                    };
+                }
+
+                // Update or save the selected dates and their styles
+                localStorage.setItem('selectedDates', JSON.stringify(savedDates));
+
+            }
+        });
+        calendar.render();
+
+        // Apply styles on page load using a for loop
+        var savedDates = JSON.parse(localStorage.getItem('selectedDates')) || {};
+        for (var date in savedDates) {
+            var formattedDate = new Date(date);
+            var day = formattedDate.getDate();
+            var month = formattedDate.getMonth() + 1; // Months are zero-based
+            var year = formattedDate.getFullYear();
+
+            // Format the date as "YYYY-MM-DD"
+            var formattedDateString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+            // Select the date element and apply the style directly
+            var dayEl = document.querySelector(`[data-date="${formattedDateString}"]`);
+            if (dayEl) {
+                // dayEl.style.backgroundColor = savedDates[date].backgroundColor;
+                // Retrieve the day number element within the clicked date cell
+                var dayNumberEl = dayEl.querySelector('.fc-daygrid-day-number');
+                dayNumberEl.style.backgroundColor = savedDates[date].backgroundColor;
+
+                // Apply border radius to the day number element
+                dayNumberEl.style.borderRadius = '100%';
+            }
+        }
+
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        var timeElements = document.getElementsByClassName('time');
+
+        for (var i = 0; i < timeElements.length; i++) {
+            var timeElement = timeElements[i];
+            if (timeElement.textContent !== 'N/A') {
+                var timeParts = timeElement.textContent.split(':');
+                var hours = parseInt(timeParts[0]);
+                var minutes = timeParts[1];
+                var ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12 || 12; // Convert 0 to 12
+
+                timeElement.textContent = hours + ':' + minutes + ' ' + ampm;
+            }
+        }
+    });
+
+    const tabs = document.querySelectorAll('.tab');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+        });
+    });
+
+    // Get input and select elements
+    const searchInput = document.getElementById('searchInput');
+    const sortBySelect = document.getElementById('sort-by');
+    const volunteersTable = document.getElementById('volunteersTable');
+
+    // Add an input event listener for the search input
+    searchInput.addEventListener('input', function() {
+        const searchText = searchInput.value.toLowerCase();
+
+        // Loop through rows and hide/show based on search text
+        Array.from(volunteersTable.rows).slice(1).forEach(row => {
+            const name = row.getAttribute('data-name').toLowerCase();
+            const status = row.getAttribute('data-status').toLowerCase();
+            if (name.includes(searchText) || status.includes(searchText)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+    // Add a change event listener for the sort select
+    sortBySelect.addEventListener('change', function() {
+        const sortByValue = sortBySelect.value;
+        const rows = Array.from(volunteersTable.rows).slice(1);
+
+        // Sort rows based on the selected criteria
+        rows.sort((a, b) => {
+            const aData = a.getAttribute(`data-${sortByValue}`);
+            const bData = b.getAttribute(`data-${sortByValue}`);
+            return aData.localeCompare(bData);
+        });
+
+        // Clear the table and add the sorted rows back
+        while (volunteersTable.rows.length > 1) {
+            volunteersTable.deleteRow(1);
+        }
+        rows.forEach(row => {
+            volunteersTable.appendChild(row);
+        });
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+        const sortSelect = document.getElementById("sort-by");
+        const tableBody = document.getElementById("volunteersTable").getElementsByTagName('tbody')[0]; // Get the table body
+        const rows = tableBody.querySelectorAll("tr");
+
+        sortSelect.addEventListener("change", function() {
+            const selectedStatus = sortSelect.value;
+
+            // Loop through the rows and hide/show based on the selected status
+            rows.forEach(function(row) {
+                const status = row.getAttribute("data-status");
+                if (selectedStatus === "sort" || status === selectedStatus) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
