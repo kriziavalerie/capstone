@@ -1,4 +1,5 @@
 gunicorn
+pdfkit
 alembic==1.12.0
 Authlib==1.2.1
 autopep8==2.0.4
