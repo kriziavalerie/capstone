@@ -10,11 +10,9 @@ from models.AnimalStory import AnimalStory
 from models.AnimalOwner import AnimalOwner
 from models.Client import Client
 from models.AnimalHealth import AnimalHealth
-import pdfkit
 
 animal_blueprint = Blueprint('animal', __name__)
 
-pdfkit_config = pdfkit.configuration(wkhtmltopdf='C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe')
 #ANIMAL ROUTES
 
 @animal_blueprint.route('/animal/create', methods=['POST'])
